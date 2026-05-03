@@ -1,0 +1,31 @@
+vexel/config.py
+  db62e529aaaac42e 41-43
+vexel/search/engine.py
+  db62e529aaaac42e 179
+tests/integration/flipkart_fashion_eval.py
+  db62e529aaaac42e 1-452
+vexel/store/qdrant.py
+  db62e529aaaac42e 185-189
+results/flipkart_fashion_eval.md
+  db62e529aaaac42e 1-367
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.7",
+  "base_commit_sha": "ff5a6b685ba9c08ca4e125b742b1eacbf0b5488c",
+  "prompts": {
+    "db62e529aaaac42e": {
+      "agent_id": {
+        "tool": "DeputyDev",
+        "id": "418866",
+        "model": "CLAUDE_4_POINT_6_SONNET"
+      },
+      "human_author": "pareeksourav <sourav.pareek@1mg.com>",
+      "messages": [],
+      "total_additions": 828,
+      "total_deletions": 1,
+      "accepted_lines": 828,
+      "overriden_lines": 0
+    }
+  }
+}
