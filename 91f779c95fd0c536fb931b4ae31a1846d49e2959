@@ -1,0 +1,89 @@
+vexel/indexer/__init__.py
+  db62e529aaaac42e 1-6
+vexel/encoder/clip.py
+  db62e529aaaac42e 1-168
+examples/fastapi_server/main.py
+  db62e529aaaac42e 1-125
+vexel/indexer/multi_vector.py
+  db62e529aaaac42e 1-298
+vexel/indexer/uuid_utils.py
+  db62e529aaaac42e 1-44
+vexel/search/__init__.py
+  db62e529aaaac42e 1-6
+vexel/store/__init__.py
+  db62e529aaaac42e 1-6
+tests/unit/test_config.py
+  db62e529aaaac42e 1-101
+tests/unit/test_qdrant_adapter.py
+  db62e529aaaac42e 1-31
+vexel/store/weaviate.py
+  db62e529aaaac42e 1-51
+vexel/image_pipeline/phash_filter.py
+  db62e529aaaac42e 1-169
+tests/unit/test_search_engine.py
+  db62e529aaaac42e 1-110
+tests/unit/test_uuid_utils.py
+  db62e529aaaac42e 1-46
+vexel/encoder/base.py
+  db62e529aaaac42e 1-99
+vexel/__init__.py
+  db62e529aaaac42e 1-60
+examples/pharmacy_config.yaml
+  db62e529aaaac42e 1-56
+vexel/search/engine.py
+  db62e529aaaac42e 1-184
+tests/unit/test_threshold.py
+  db62e529aaaac42e 1-46
+vexel/store/base.py
+  db62e529aaaac42e 1-147
+vexel/encoder/factory.py
+  db62e529aaaac42e 1-44
+tests/conftest.py
+  db62e529aaaac42e 1-9
+vexel/encoder/__init__.py
+  db62e529aaaac42e 1-6
+vexel/store/pinecone.py
+  db62e529aaaac42e 1-52
+examples/fastapi_server/__init__.py
+  db62e529aaaac42e 1
+vexel/image_pipeline/fetcher.py
+  db62e529aaaac42e 1-127
+vexel/search/threshold.py
+  db62e529aaaac42e 1-47
+vexel/store/factory.py
+  db62e529aaaac42e 1-63
+examples/sneakers_config.yaml
+  db62e529aaaac42e 1-55
+pyproject.toml
+  db62e529aaaac42e 1-69
+vexel/config.py
+  db62e529aaaac42e 1-227
+vexel/store/qdrant.py
+  db62e529aaaac42e 1-210
+vexel/image_pipeline/preprocessor.py
+  db62e529aaaac42e 1-243
+vexel/cli.py
+  db62e529aaaac42e 1-103
+vexel/image_pipeline/__init__.py
+  db62e529aaaac42e 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.7",
+  "base_commit_sha": "91f779c95fd0c536fb931b4ae31a1846d49e2959",
+  "prompts": {
+    "db62e529aaaac42e": {
+      "agent_id": {
+        "tool": "DeputyDev",
+        "id": "418866",
+        "model": "CLAUDE_4_POINT_6_SONNET"
+      },
+      "human_author": "pareeksourav <sourav.pareek@1mg.com>",
+      "messages": [],
+      "total_additions": 3047,
+      "total_deletions": 24,
+      "accepted_lines": 3023,
+      "overriden_lines": 0
+    }
+  }
+}
