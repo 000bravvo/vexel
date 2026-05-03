@@ -1,0 +1,55 @@
+# Vexel configuration — Sneakers / Footwear use case
+#
+# Image types:
+#   0 = main_shot     (hero product image, full shoe)
+#   1 = side_view     (lateral profile)
+#   2 = sole_detail   (outsole texture)
+
+vexel:
+  encoder:
+    name: clip
+    model: ViT-B/32
+    device: cpu
+    batch_size: 8
+
+  store:
+    backend: qdrant
+    qdrant:
+      host: localhost
+      port: 6333
+      collection: sneakers_images
+      vector_size: 512
+
+  pipeline:
+    preprocessor:
+      enabled: true
+      download_size: 512
+      target_size: 224
+      padding_color: [255, 255, 255]   # white canvas suits product-on-white shots
+      bg_threshold: 20.0               # sneakers often have textured near-white BG
+      near_neutral_tolerance: 15
+      margin_pct: 0.03
+      min_subject_area: 0.08
+    cdn_transform:
+      enabled: true
+      template: "{url}?w={size}&h={size}&fit=clip"   # Imgix-style
+
+  placeholder_filter:
+    registry_path: ./sneakers_placeholder_hashes.json
+    frequency_threshold: 5
+
+  indexer:
+    max_images_per_entity: 3
+    concurrent_workers: 12
+    batch_upsert_size: 200
+    namespace_uuid: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+    image_type_mapping:
+      0: main_shot
+      1: side_view
+      2: sole_detail
+
+  search:
+    over_fetch_multiplier: 3
+    score_gap_threshold: 0.10    # sneakers benefit from slightly wider gap tolerance
+    min_score: 0.72
+    max_results: 20

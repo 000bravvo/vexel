@@ -1,0 +1,56 @@
+# Vexel configuration — Pharmacy / Medicine cabinet use case
+# Covers generic drugs, OTC products, nutraceuticals.
+#
+# Image types:
+#   0 = primary_box    (product carton — dominant view)
+#   1 = blister_strip  (tablet / capsule blister pack)
+#   2 = loose_pill     (individual dosage form)
+
+vexel:
+  encoder:
+    name: clip
+    model: ViT-B/32
+    device: cpu           # change to "cuda" for GPU inference
+    batch_size: 8
+
+  store:
+    backend: qdrant
+    qdrant:
+      host: localhost
+      port: 6333
+      collection: pharmacy_images
+      vector_size: 512
+
+  pipeline:
+    preprocessor:
+      enabled: true
+      download_size: 512        # CDN resolution for smart-crop detection
+      target_size: 224          # final encoder input size
+      padding_color: [128, 128, 128]
+      bg_threshold: 15.0
+      near_neutral_tolerance: 10
+      margin_pct: 0.05
+      min_subject_area: 0.05
+    cdn_transform:
+      enabled: true
+      template: "{url}?w={size}&h={size}"   # Gumlet-style
+
+  placeholder_filter:
+    registry_path: ./placeholder_hashes.json
+    frequency_threshold: 3
+
+  indexer:
+    max_images_per_entity: 3
+    concurrent_workers: 8
+    batch_upsert_size: 100
+    namespace_uuid: "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+    image_type_mapping:
+      0: primary_box
+      1: blister_strip
+      2: loose_pill
+
+  search:
+    over_fetch_multiplier: 3
+    score_gap_threshold: 0.08
+    min_score: 0.70
+    max_results: 20
