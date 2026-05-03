@@ -176,7 +176,7 @@ class VisualSearchEngine:
             if self._phash_filter.is_placeholder(phash_hex):
                 logger.debug("Query image is a placeholder (phash=%s)", phash_hex)
                 # Exclude all known placeholder hashes from ANN results
-                known_hashes = set(self._phash_filter._registry.keys())
+                known_hashes = self._phash_filter.get_all_hashes()
                 return {"must_not_phash": known_hashes}
         except Exception as exc:
             logger.warning("pHash computation failed: %s", exc)

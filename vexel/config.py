@@ -38,6 +38,9 @@ class EncoderConfig(BaseModel):
     model: str = "ViT-B/32"
     """Model variant, passed to the encoder implementation."""
 
+    pretrained: str = "openai"
+    """Pretrained weights tag passed to open_clip (e.g. "openai", "laion2b_s34b_b79k")."""
+
     device: str = "cpu"
     """Inference device: "cpu" | "cuda" | "mps"."""
 

@@ -182,6 +182,11 @@ class QdrantAdapter(BaseVectorStore):
     # Helpers                                                            #
     # ---------------------------------------------------------------- #
 
+    @property
+    def is_ready(self) -> bool:
+        """True once connect() has succeeded."""
+        return self._client is not None
+
     def _assert_connected(self) -> None:
         if self._client is None:
             raise RuntimeError(
