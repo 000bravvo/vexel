@@ -8,11 +8,11 @@
 
 **vexel** is a domain-agnostic Python library for building multi-vector image search systems. It solves the core technical problems — image preprocessing, multi-representation indexing, deduplication, placeholder filtering, and score-gap thresholding — leaving business logic (catalog hydration, filtering rules) to the integrator.
 
-The library is built for e-commerce, healthcare, and any catalog where a single product has multiple visual representations (box, blister strip, loose item; main shot, side view, sole; etc.).
+The library is built for e-commerce and any catalog where a single product has multiple visual representations (main shot, side view, sole; front, back, detail; etc.).
 
 **Target Users:** ML engineers, backend engineers, data engineers building search features.
 
-**Core Value:** One indexing pipeline works for medicines, sneakers, furniture, or spare parts. Just configure it via YAML.
+**Core Value:** One indexing pipeline works for sneakers, furniture, spare parts, or any product catalog. Just configure it via YAML.
 
 ---
 
@@ -39,9 +39,8 @@ Everything that touches your business domain.
 | Component | Rationale |
 |---|---|
 | ES/SKU hydration | Tied to your data model |
-| saleable, is_discontinued, city filters | Business rules, not search logic |
-| is_rx, category payload fields | Domain-specific metadata |
-| primary_box / blister_strip / loose_pill labels | Domain vocabulary (configured in YAML) |
+| in_stock, active, geo_availability filters | Business rules, not search logic |
+| Image type labels | Domain vocabulary (configured in YAML) |
 | API endpoints, auth, rate limiting | Infrastructure choice |
 | Analytics, GA, RudderStack | Deployment-specific |
 
@@ -529,7 +528,7 @@ pip install vexel[clip,qdrant,opencv]
 pip install vexel[clip,qdrant]
 
 # Create config
-cp examples/pharmacy_config.yaml vexel.yaml
+cp examples/sneakers_config.yaml vexel.yaml
 
 # Run indexer
 python indexer_job.py
@@ -561,7 +560,7 @@ curl -F "image=@product.jpg" http://localhost:8000/visual-search
 - Saliency-based cropping
 - SigLIPEncoder
 - Weaviate + Pinecone completion
-- Fine-tuning recipes (see [PharmaCLIP training guide](results/pharmaclip_training.md))
+- Fine-tuning recipes
 - Batch query API
 - Analytics hooks
 - Streaming indexer
@@ -588,7 +587,7 @@ Total per query (CPU)          :  ~22–25 ms
 | Config | Vectors |
 |---|---|
 | 1 image / SKU | 100,000 |
-| 3 images / SKU (box + strip + pill) | 300,000 |
+| 3 images / SKU (main + side + detail) | 300,000 |
 
 | Instance | CLIP encode / img | Throughput | Time (300k imgs) | Spot cost | Total cost |
 |---|---|---|---|---|---|
