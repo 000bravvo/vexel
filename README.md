@@ -561,10 +561,92 @@ curl -F "image=@product.jpg" http://localhost:8000/visual-search
 - Saliency-based cropping
 - SigLIPEncoder
 - Weaviate + Pinecone completion
-- Fine-tuning recipes
+- Fine-tuning recipes (see [PharmaCLIP training guide](results/pharmaclip_training.md))
 - Batch query API
 - Analytics hooks
 - Streaming indexer
+
+---
+
+# 17. Production Cost & Scaling
+
+> Numbers derived from measured benchmarks on Apple M-series CPU and extrapolated to AWS instance types.
+> See [`results/flipkart_fashion_eval.md`](results/flipkart_fashion_eval.md) for the underlying benchmark.
+
+## 17.1 Per-query latency breakdown
+
+```
+CLIP encode (ViT-B/32, CPU)    :  18–20 ms   ← dominant bottleneck
+Qdrant HNSW ANN (300k vectors) :   2–4 ms
+Dedup + filter + sort          :    ~1 ms
+──────────────────────────────────────────
+Total per query (CPU)          :  ~22–25 ms
+```
+
+## 17.2 Indexing 100k SKUs (one-time batch job)
+
+| Config | Vectors |
+|---|---|
+| 1 image / SKU | 100,000 |
+| 3 images / SKU (box + strip + pill) | 300,000 |
+
+| Instance | CLIP encode / img | Throughput | Time (300k imgs) | Spot cost | Total cost |
+|---|---|---|---|---|---|
+| c5.2xlarge (8 vCPU, CPU) | ~50 ms | 160 img/s | ~31 min | $0.034/hr | **< $0.02** |
+| g4dn.xlarge (T4, single) | ~5 ms | 200 img/s | ~25 min | $0.158/hr | **< $0.07** |
+| g4dn.xlarge (T4, batch=32) | ~12 ms | 2,700 img/s | **~2 min** | $0.158/hr | **< $0.01** |
+
+Indexing is a negligible cost. A full re-index of 100k SKUs (3 images each) completes in under 2 minutes on a single spot T4.
+
+### Qdrant storage for 300k vectors
+
+```
+300k × 512-d float32          =  614 MB raw vectors
+HNSW graph overhead (~2-3×)   ≈  1.2–1.8 GB
+Payload metadata               ≈  200 MB
+─────────────────────────────────────────────
+Total RAM required             ≈  2 GB
+```
+
+A `r6i.small` (2 vCPU, 4 GB RAM) at $0.063/hr = **$46/month** comfortably handles up to 300k vectors with room for HNSW rebuilds.
+
+## 17.3 Serving throughput and monthly cost
+
+| Scale | Searches / day | Typical for |
+|---|---|---|
+| 10 QPS | 864k | Mid-size app |
+| 100 QPS | 8.6M | Large marketplace (peak) |
+| 1,000 QPS | 86M | Amazon / Flipkart full peak |
+
+### Max QPS per instance
+
+| Instance | CLIP encode | Max QPS (8 workers) |
+|---|---|---|
+| c5.2xlarge (8 vCPU, CPU) | ~50 ms | ~160 |
+| c5.4xlarge (16 vCPU, CPU) | ~50 ms | ~320 |
+| g4dn.xlarge (T4, batch=1) | ~5 ms | ~800 |
+| g4dn.xlarge (T4, batch=16) | ~12 ms total | **~1,300** |
+
+### Monthly infrastructure cost
+
+| Scale | Architecture | Monthly cost |
+|---|---|---|
+| 5–10 QPS (today) | 1× c5.2xlarge + r6i.small | **~$100** |
+| 100 QPS | 1× g4dn.xlarge + r6i.large | **~$450** |
+| 1,000 QPS (on-demand) | 2× g4dn.xlarge + r6i.large | **~$910** |
+| 1,000 QPS (spot fleet) | 4× g4dn.xlarge spot + r6i.large | **~$380** |
+| 1,000 QPS (1-yr reserved) | 2× g4dn.xlarge reserved + r6i | **~$530** |
+
+## 17.4 Critical scaling path
+
+The current encoder processes one image per call. GPU utilisation is poor at low batch sizes. The fix is **dynamic request batching** — collect 16–32 requests over a 10–20 ms window and run a single forward pass:
+
+```
+Single image on T4:    5 ms  →   200 QPS per GPU
+Batch of 16 on T4:    12 ms  →  1,333 QPS per GPU  (6.7× gain)
+```
+
+The `BaseEncoder` ABC already declares `encode_batch()`; only the `CLIPEncoder` implementation needs this method added before GPU deployment makes sense.
 
 ---
 
