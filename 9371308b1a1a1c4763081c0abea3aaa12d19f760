@@ -1,0 +1,23 @@
+README.md
+  db62e529aaaac42e 564,571-649
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.7",
+  "base_commit_sha": "9371308b1a1a1c4763081c0abea3aaa12d19f760",
+  "prompts": {
+    "db62e529aaaac42e": {
+      "agent_id": {
+        "tool": "DeputyDev",
+        "id": "418866",
+        "model": "CLAUDE_4_POINT_6_SONNET"
+      },
+      "human_author": "pareeksourav <sourav.pareek@1mg.com>",
+      "messages": [],
+      "total_additions": 334,
+      "total_deletions": 1,
+      "accepted_lines": 334,
+      "overriden_lines": 0
+    }
+  }
+}
